@@ -3,8 +3,8 @@ const { pushEvent } = require('./modules/line')
 const mongoose = require('mongoose')
 const moment = require('moment')
 
-mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-// mongoose.connect('mongodb://localhost:27017/test1', { useNewUrlParser: true, useUnifiedTopology: true, })
+// mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect('mongodb://localhost:27017/test1', { useNewUrlParser: true, useUnifiedTopology: true, })
 const Candidate = require('./models/candidate')
 
 const url = 'https://2020.misscircle.jp/entries/seconds/a'
@@ -14,9 +14,7 @@ let done = false
 
 module.exports.main = async function () {
   pushEvent('Starting scraping miss circle.')
-  const browser = await puppeteer.launch({
-    headless: false
-  })
+  const browser = await puppeteer.launch()
   const page = await browser.newPage()
   const temper = await browser.newPage()
 
@@ -24,31 +22,35 @@ module.exports.main = async function () {
   await page.waitFor(2000)
 
   page.on('response', async res => {
-    if (res.url().match(keyword) && res) {
-      const dt = await res.json()
-      const base = dt.result
-      let counter = 0
-      for (const acc of base) {
-        const obj = {
-          application_id: acc.application_id,
-          entry_id: acc.entry_id,
-          block: acc.block,
-          stage: acc.stage,
-          public_name: acc.public_name,
-          public_name_kana: acc.public_name_kana,
-          university: acc.university,
-          circle: acc.circle,
-          grade: acc.grade,
-          image: acc.image
+    try {
+      if (res.url().match(keyword) && res) {
+        const dt = await res.json()
+        const base = dt.result
+        pushEvent(`miss circle founed ${base.length} users.`)
+        let counter = 0
+        for (const acc of base) {
+          const obj = {
+            application_id: acc.application_id,
+            entry_id: acc.entry_id,
+            block: acc.block,
+            stage: acc.stage,
+            public_name: acc.public_name,
+            public_name_kana: acc.public_name_kana,
+            university: acc.university,
+            circle: acc.circle,
+            grade: acc.grade,
+            image: acc.image
+          }
+          await Candidate.updateOne({ entry_id: obj.entry_id }, obj, { upsert: true })
+          await showroom(page, acc.showroom, obj.entry_id)
+          await twitter(page, acc.twitter, obj.entry_id)
+          await instagram(page, acc.instagram, obj.entry_id)
+          counter++
+          if (base.length === counter) done = true
         }
-        await Candidate.updateOne({ entry_id: obj.entry_id }, obj, { upsert: true })
-        await showroom(page, acc.showroom, obj.entry_id)
-        await twitter(page, acc.twitter, obj.entry_id)
-        await instagram(page, acc.instagram, obj.entry_id)
-        counter++
-        // if (base.length === counter) done = true
-        if (counter === 2) done = true
       }
+    } catch {
+      pushEvent('on response failed miss-circle')
     }
   })
 
