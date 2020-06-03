@@ -14,7 +14,7 @@ let done = false
 
 module.exports.main = async function () {
   pushEvent('Starting scraping miss circle.')
-  const browser = await puppeteer.launch()
+  const browser = await puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox']})
   const page = await browser.newPage()
   const temper = await browser.newPage()
 
