@@ -3,8 +3,8 @@ const { pushEvent } = require('./modules/line')
 const mongoose = require('mongoose')
 const moment = require('moment')
 
-// mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-mongoose.connect('mongodb://localhost:27017/test1', { useNewUrlParser: true, useUnifiedTopology: true, })
+mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+// mongoose.connect('mongodb://localhost:27017/test1', { useNewUrlParser: true, useUnifiedTopology: true, })
 const Candidate = require('./models/candidate')
 
 const url = 'https://2020.misscircle.jp/entries/seconds/a'
