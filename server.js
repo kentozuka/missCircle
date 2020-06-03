@@ -7,7 +7,6 @@ const app = express()
 const PORT = process.env.PORT || 5000
 
 app.get('/', (req, res) => res.json({ message: 'okay' }))
-app.get('/config', (req, res) => res.send(process.env))
 app.post('/startdailyscrapingplease', (req, res) => {
   res.json({ message: 'okay' })
   const st = moment()
