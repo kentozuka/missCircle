@@ -33,6 +33,6 @@ app.post('/startdailyscrapingplease', (req, res) => {
   res.json({ message: 'okay' })
   const st = moment()
   main().then(() => pushEvent(`Done scraping miss circle. took ${moment().diff(st, 'minutes')} mins.`))
-// })
+})
 
 app.listen(PORT, () => console.log(`app listening on port ${PORT}`))
