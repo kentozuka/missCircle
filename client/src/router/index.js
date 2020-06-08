@@ -23,12 +23,13 @@ const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
   routes,
-  scrollBehavior: (to, from, savedPosition) => {
-    if (to.name.startsWith('products') && from.name.startsWith('products')) {
-      return null;
+  scrollBehavior (to, from) {
+    if (to.name === 'Home' && from.name === 'About') {
+      return {
+        selector: '#' + from.params.entry_id
+      }
     }
-    return savedPosition || { x: 0, y: 0 };
-  },
+  }
 })
 
 export default router

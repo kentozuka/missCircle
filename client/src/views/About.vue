@@ -48,7 +48,7 @@
         </a>
         <p>
           <span class="mr-2">{{dt.university}}</span>
-          <span>{{dt.grade}}年</span>
+          <span>{{dt.grade || '?'}}年</span>
         </p>
         <p class="text-sm text-gray-600">{{dt.circle}}</p>
       </div>
@@ -124,7 +124,7 @@
         </svg>
       </a>
     </div>
-    <div class="mb-4" v-show="dt && dt.showroom.length">
+    <div class="mb-4" v-if="dt && dt.showroom.length">
       <h3 class="font-bold mb-2">
         Showroom
         <span class="ml-2 font-normal text-sm m-auto text-gray-600">全体の{{total.showroom}}%</span>
@@ -144,7 +144,7 @@
         </tr>
       </table>
     </div>
-    <div class="mb-4" v-show="dt && dt.instagram.length">
+    <div class="mb-4" v-if="dt && dt.instagram.length">
       <h3 class="font-bold mb-2">
         Instagram
         <span class="ml-2 font-normal text-sm m-auto text-gray-600">全体の{{total.instagram}}%</span>
@@ -164,7 +164,7 @@
         </tr>
       </table>
     </div>
-    <div class="mb-4" v-show="dt && dt.twitter.length">
+    <div class="mb-4" v-if="dt && dt.twitter.length">
       <h3 class="font-bold mb-2">
         Twitter
         <span class="ml-2 font-normal text-sm m-auto text-gray-600">全体の{{total.twitter}}%</span>
@@ -222,13 +222,13 @@ export default {
       return null;
     },
     total: function() {
-      const sho = this.dt.showroom
+      const sho = this.dt.showroom.length
         ? parseInt(this.dt.showroom[this.dt.showroom.length - 1].followers)
         : 0;
-      const ins = this.dt.instagram
+      const ins = this.dt.instagram.length
         ? parseInt(this.dt.instagram[this.dt.instagram.length - 1].followers)
         : 0;
-      const twi = this.dt.twitter
+      const twi = this.dt.twitter.length
         ? parseInt(this.dt.twitter[this.dt.twitter.length - 1].followers)
         : 0;
       const total = sho + ins + twi;

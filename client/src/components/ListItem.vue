@@ -1,5 +1,5 @@
 <template>
-  <div class="flex items-center py-4 border-b hover:bg-gray-100" @click="go(item.entry_id)">
+  <div class="flex items-center py-4 border-b hover:bg-gray-100" @click="go(item.entry_id)" :id="item.entry_id">
     <div class="w-1/12 text-xs flex flex-col justify-center items-center mr-2">
       <span
         class="mb-1"

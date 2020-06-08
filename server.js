@@ -6,7 +6,8 @@ const Candidate = require('./models/candidate')
 const cors = require('cors')
 
 // only in development
-// const mongoose = require('mongoose')
+const mongoose = require('mongoose')
+mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
 // mongoose.connect('mongodb://localhost:27017/test1', { useNewUrlParser: true, useUnifiedTopology: true })
 
 const app = express()
@@ -32,6 +33,6 @@ app.post('/startdailyscrapingplease', (req, res) => {
   res.json({ message: 'okay' })
   const st = moment()
   main().then(() => pushEvent(`Done scraping miss circle. took ${moment().diff(st, 'minutes')} mins.`))
-})
+// })
 
 app.listen(PORT, () => console.log(`app listening on port ${PORT}`))
