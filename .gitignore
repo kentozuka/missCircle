@@ -1,4 +1,6 @@
 localConfig.js
+# client/public
+# client/src
 
 # Created by https://www.gitignore.io/api/node
 # Edit at https://www.gitignore.io/?templates=node
