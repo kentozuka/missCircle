@@ -4,7 +4,7 @@ const mongoose = require('mongoose')
 const moment = require('moment')
 
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-// mongoose.connect('mongodb://localhost:27017/test1', { useNewUrlParser: true, useUnifiedTopology: true, })
+// mongoose.connect('mongodb://localhost:27017/test1', { useNewUrlParser: true, useUnifiedTopology: true })
 const Candidate = require('./models/candidate')
 
 const url = 'https://2020.misscircle.jp/entries/seconds/a'
@@ -14,7 +14,7 @@ let done = false
 
 module.exports.main = async function () {
   pushEvent('Starting scraping miss circle.')
-  const browser = await puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox']})
+  const browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] })
   const page = await browser.newPage()
   const temper = await browser.newPage()
 
@@ -66,7 +66,7 @@ module.exports.main = async function () {
   }
 }
 
-async function showroom(page, id, ent) {
+async function showroom (page, id, ent) {
   if (id) {
     try {
       await page.goto(`https://www.showroom-live.com/room/profile?room_id=${id}`, { waitUntil: 'networkidle2' })
@@ -76,6 +76,7 @@ async function showroom(page, id, ent) {
         const followers = await page.$eval('.room-profile-info-follower', el => el.innerText.match(/\d+/g)[0])
         const three = await page.$$eval('.room-profile-status-desc', li => li.map(x => x.innerText))
         const result = { id: id, date: moment().format(), followers: followers, level: three[0], rank: three[1] }
+        console.log(result)
         await Candidate.updateOne({ entry_id: ent }, { $push: { showroom: result } })
       }
     } catch {
@@ -85,7 +86,7 @@ async function showroom(page, id, ent) {
   }
 }
 
-async function twitter(page, id, ent) {
+async function twitter (page, id, ent) {
   if (id) {
     try {
       await page.goto(`https://twitter.com/${id}`, { waitUntil: 'networkidle2' })
@@ -95,6 +96,7 @@ async function twitter(page, id, ent) {
         const following = await page.$eval(`a[href="/${id}/following"]`, el => el.innerText.match(/\d+/g).join(''))
         const followers = await page.$eval(`a[href="/${id}/followers"]`, el => el.innerText.match(/\d+/g).join(''))
         const result = { id: id, date: moment().format(), followers: followers, following: following }
+        console.log(result)
         await Candidate.updateOne({ entry_id: ent }, { $push: { twitter: result } })
       }
     } catch {
@@ -104,7 +106,7 @@ async function twitter(page, id, ent) {
   }
 }
 
-async function instagram(page, id, ent) {
+async function instagram (page, id, ent) {
   if (id) {
     try {
       await page.goto(`https://www.instagram.com/${id}/`, { waitUntil: 'networkidle2' })
@@ -112,6 +114,7 @@ async function instagram(page, id, ent) {
       const three = await page.$$eval('.-nal3', li => li.map(x => x.innerText.match(/\d+/g).join('')))
       if (three.length) {
         const result = { id: id, date: moment().format(), followers: three[1], following: three[2], posts: three[0] }
+        console.log(result)
         await Candidate.updateOne({ entry_id: ent }, { $push: { instagram: result } })
       }
     } catch {
