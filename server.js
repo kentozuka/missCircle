@@ -1,7 +1,7 @@
 const express = require('express')
-// const moment = require('moment')
-// const { main } = require('./scraper')
-// const { pushEvent } = require('./modules/line')
+const moment = require('moment')
+const { main } = require('./scraper')
+const { pushEvent } = require('./modules/line')
 const Candidate = require('./models/candidate')
 const cors = require('cors')
 
@@ -28,10 +28,10 @@ app.get('/api/single/:id', async (req, res) => {
   res.json({ data: await Candidate.find({ entry_id: req.params.id }) })
 })
 
-// app.post('/startdailyscrapingplease', (req, res) => {
-//   res.json({ message: 'okay' })
-//   const st = moment()
-//   main().then(() => pushEvent(`Done scraping miss circle. took ${moment().diff(st, 'minutes')} mins.`))
-// })
+app.post('/startdailyscrapingplease', (req, res) => {
+  res.json({ message: 'okay' })
+  const st = moment()
+  main().then(() => pushEvent(`Done scraping miss circle. took ${moment().diff(st, 'minutes')} mins.`))
+})
 
 app.listen(PORT, () => console.log(`app listening on port ${PORT}`))
